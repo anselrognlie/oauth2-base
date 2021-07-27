@@ -5,7 +5,7 @@ const Number = () => {
     const [number, setNumber] = useState(null);
 
     const getNumber = async () => {
-        const response = await axios.get('api/number')
+        const response = await axios.get('/api/number')
         setNumber(response.data.number);
     };
 

@@ -16,6 +16,10 @@ def register(app):
     def favicon():
         return app.send_static_file("favicon.ico")
 
+    @app.route('/manifest.json', methods=("GET",))
+    def manifest():
+        return app.send_static_file("manifest.json")
+
     @app.route('/', methods=("GET",), defaults={'path': ''})
     @app.route('/<path:path>', methods=("GET",))
     def root(path):

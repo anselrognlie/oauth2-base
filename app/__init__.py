@@ -4,12 +4,15 @@ from werkzeug.exceptions import NotFound, BadRequest
 from dotenv import load_dotenv
 import os
 import uuid
+from .auth import google
 
 # db = SQLAlchemy()
 # migrate = Migrate()
 
 def create_app(test_config=None):
     load_dotenv()
+
+    google.load()
 
     app = Flask(__name__,
         static_folder=os.environ.get("FRONT_END_PATH"),
@@ -38,8 +41,9 @@ def create_app(test_config=None):
 
     api = Blueprint("api", __name__, url_prefix="/api")
 
-    from .routes import number, root
+    from .routes import number, root, login
     api.register_blueprint(number.bp)
+    api.register_blueprint(login.bp)
 
     app.register_blueprint(api)
     root.register(app)
