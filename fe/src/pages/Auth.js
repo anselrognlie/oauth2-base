@@ -13,19 +13,18 @@ const Auth = ({ setUser, user }) => {
     const history = useHistory();
     const query = useQuery();
 
-    const code = query.get('code');
-
     const getEmail = useCallback(async () => {
+        const code = query.get('code');
+        const state = query.get('state');
+
         console.log('auth response')
         const response = await axios.get('/api/login/auth', {
-            params: {
-                code: code
-            }
+            params: { code, state }
         })
 
         setUser(response.data.email);
         history.push("/");
-    }, [code, setUser, history]);
+    }, [setUser, history, query]);
 
     useEffect(() => {
         if (user) { return; }

@@ -12,13 +12,14 @@ from .auth import google
 def create_app(test_config=None):
     load_dotenv()
 
-    google.load()
-
     app = Flask(__name__,
         static_folder=os.environ.get("FRONT_END_PATH"),
         static_url_path=f"/{uuid.uuid4()}"
     )
     app.url_map.strict_slashes = False
+    app.secret_key = os.environ.get("SECRET_KEY", None)
+
+    google.load(app)
 
     # app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
