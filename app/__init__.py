@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import uuid
 from .auth import google
+from .util.string import utf8_string
 
 # db = SQLAlchemy()
 # migrate = Migrate()
@@ -17,7 +18,7 @@ def create_app(test_config=None):
         static_url_path=f"/{uuid.uuid4()}"
     )
     app.url_map.strict_slashes = False
-    app.secret_key = os.environ.get("SECRET_KEY", None)
+    app.secret_key = utf8_string(os.environ.get("SECRET_KEY", ''))
 
     google.load(app)
 
