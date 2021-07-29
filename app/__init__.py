@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, Blueprint
 from flask_cors import CORS
-from werkzeug.exceptions import NotFound, BadRequest
+from werkzeug.exceptions import NotFound, BadRequest, Unauthorized
 from dotenv import load_dotenv
 import os
 import uuid
@@ -51,6 +51,7 @@ def create_app(test_config=None):
 
     @app.errorhandler(NotFound)
     @app.errorhandler(BadRequest)
+    @app.errorhandler(Unauthorized)
     def handle_invalid_usage(error):
         return jsonify(error.description), error.code
 

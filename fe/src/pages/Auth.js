@@ -2,34 +2,30 @@ import axios from 'axios';
 import { useCallback, useEffect } from 'react';
 import {
     useLocation,
-    useHistory
 } from 'react-router-dom';
+
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
   
-const Auth = ({ setUser, user }) => {
-    const history = useHistory();
+const Auth = ({ onUserLoggedIn }) => {
     const query = useQuery();
 
-    const getEmail = useCallback(async () => {
-        const code = query.get('code');
-        const state = query.get('state');
+    const code = query.get('code');
+    const state = query.get('state');
 
-        console.log('auth response')
+    const getUser = useCallback(async () => {
         const response = await axios.get('/api/login/auth', {
             params: { code, state }
         })
 
-        setUser(response.data.email);
-        history.push("/");
-    }, [setUser, history, query]);
+        onUserLoggedIn(response.data);
+    }, [onUserLoggedIn, code, state]);
 
     useEffect(() => {
-        if (user) { return; }
-        getEmail();
-    }, [getEmail, user]);
+        getUser();
+    }, [getUser]);
 
     return null;
 };

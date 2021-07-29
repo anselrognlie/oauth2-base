@@ -1,5 +1,4 @@
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Link,
@@ -9,27 +8,21 @@ import Number from './pages/Number';
 import Auth from './pages/Auth';
 import Logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useCallback } from 'react';
+import useLogin from './hooks/login';
 import axios from 'axios';
-
-const useLogin = (account) => {
-  const localUser = localStorage.getItem("user")
-  const [user, setUser] = useState(localUser);
-
-  const setLogin = (login) => {
-    if (login) {
-      localStorage.setItem("user", login);
-    } else {
-      localStorage.removeItem("user");
-    }
-
-    setUser(login);
-  };
-  return [user, setLogin];
-};
+import {
+  useHistory
+} from 'react-router-dom';
 
 function App() {
   const [user, setUser] = useLogin();
+  const history = useHistory();
+
+  const onUserLoggedIn = useCallback((user) => {
+    setUser(user);
+    history.push("/");
+  }, [setUser, history]);
 
   const logout = () => {
     setUser(null);
@@ -46,7 +39,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <>
       <nav>
         <ul>
         <li><Link to="/">Main</Link></li>
@@ -54,19 +47,19 @@ function App() {
         <li><Link to="/page2">Page2</Link></li>
         <li>{ !!user ? <button onClick={logout}>Logout</button> : <button onClick={login}>Login</button> }</li>
         </ul>
-        <div>{ !!user && <span>Logged in as {user}</span> }</div>
+        <div>{ !!user && <span>Logged in as {user.profile.full_name}</span> }</div>
       </nav>
     <div className="App">
       <Switch>
         <Route exact path="/"><img alt="react" src={Logo}></img></Route>
-        <Route exact path="/page1"><Number /></Route>
+        <Route exact path="/page1"><Number token={user?.token} /></Route>
         <Route exact path="/page2">Page2</Route>
-        <Route exact path="/auth/google"><Auth {...{setUser, user}} /></Route>
+        <Route exact path="/auth/google"><Auth {...{onUserLoggedIn, user}} /></Route>
         <Route exact path="/404">Not found</Route>
         <Route><Redirect to="/404" /></Route>
       </Switch>
     </div>
-    </Router>
+    </>
   );
 }
 
