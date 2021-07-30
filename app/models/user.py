@@ -1,4 +1,4 @@
-from app import db
+from ..data.storage import db
 from .bad_model_action import BadModelAction
 from werkzeug.exceptions import NotFound, BadRequest
 import sqlalchemy

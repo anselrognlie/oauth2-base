@@ -6,11 +6,11 @@ import os
 import uuid
 from .auth import google
 from .util.string import utf8_string
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-
-db = SQLAlchemy()
-migrate = Migrate()
+from .auth.jwt_endpoint import register_default_validator
+from .data.storage import db, migrate
+from .models.user import User
+from .auth.user_validator import validate
+from .routes import number, root, login
 
 def create_app(test_config=None):
     load_dotenv()
@@ -35,7 +35,7 @@ def create_app(test_config=None):
             "SQLALCHEMY_DATABASE_URI_TEST")
 
     # Import models here for Alembic setup
-    from app.models.user import User
+    register_default_validator(validate)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -44,7 +44,6 @@ def create_app(test_config=None):
 
     api = Blueprint("api", __name__, url_prefix="/api")
 
-    from .routes import number, root, login
     api.register_blueprint(number.bp)
     api.register_blueprint(login.bp)
 
