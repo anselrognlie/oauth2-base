@@ -9,7 +9,7 @@ function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
   
-const Auth = ({ onUserLoggedIn }) => {
+const Auth = ({ onUserLoggedIn, onLoginFailed }) => {
     const query = useQuery();
 
     const code = query.get('code');
@@ -24,8 +24,10 @@ const Auth = ({ onUserLoggedIn }) => {
             onUserLoggedIn(response.data);
         } catch (error) {
             console.log(error.response.data);
+
+            onLoginFailed()
         }
-    }, [onUserLoggedIn, code, state]);
+    }, [onUserLoggedIn, onLoginFailed, code, state]);
 
     useEffect(() => {
         getUser();

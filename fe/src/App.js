@@ -26,6 +26,10 @@ function Main() {
     history.push("/");
   }, [setUser, history]);
 
+  const onLoginFailed = useCallback(() => {
+    history.push("/");
+  }, [history]);
+
   const logout = () => {
     setUser(null);
   };
@@ -67,7 +71,7 @@ function Main() {
         <Route exact path="/"><img alt="react" src={Logo}></img></Route>
         <Route exact path="/page1"><Number token={token} /></Route>
         <Route exact path="/page2">Page2</Route>
-        <Route exact path="/auth/google"><Auth {...{onUserLoggedIn, user}} /></Route>
+        <Route exact path="/auth/google"><Auth {...{onUserLoggedIn, onLoginFailed, user}} /></Route>
         <Route exact path="/404">Not found</Route>
         <Route><Redirect to="/404" /></Route>
       </Switch>
