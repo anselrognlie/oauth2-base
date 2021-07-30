@@ -1,12 +1,17 @@
 import os
+from functools import partial
 from authlib.integrations.flask_client import OAuth
-from werkzeug.local import Local
+from werkzeug.local import LocalProxy
 
-_l = Local()
-GOOGLE_CLIENT_ID = _l('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRET = _l('GOOGLE_CLIENT_SECRET')
-GOOGLE_DISCOVERY_URL = _l('GOOGLE_DISCOVERY_URL')
-oauth = _l('oauth')
+_values = {}
+
+def _find_value(name):
+    return _values.get(name)
+
+GOOGLE_CLIENT_ID = LocalProxy(partial(_find_value, 'GOOGLE_CLIENT_ID'))
+GOOGLE_CLIENT_SECRET = LocalProxy(partial(_find_value, 'GOOGLE_CLIENT_SECRET'))
+GOOGLE_DISCOVERY_URL = LocalProxy(partial(_find_value, 'GOOGLE_DISCOVERY_URL'))
+oauth = LocalProxy(partial(_find_value, 'oauth'))
 
 def load(app):
     GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
@@ -24,7 +29,7 @@ def load(app):
         }
     )
 
-    _l.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID
-    _l.GOOGLE_CLIENT_SECRET = GOOGLE_CLIENT_SECRET
-    _l.GOOGLE_DISCOVERY_URL = GOOGLE_DISCOVERY_URL
-    _l.oauth = oauth
+    _values["GOOGLE_CLIENT_ID"] = GOOGLE_CLIENT_ID
+    _values["GOOGLE_CLIENT_SECRET"] = GOOGLE_CLIENT_SECRET
+    _values["GOOGLE_DISCOVERY_URL"] = GOOGLE_DISCOVERY_URL
+    _values["oauth"] = oauth
