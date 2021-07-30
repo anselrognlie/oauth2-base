@@ -37,7 +37,7 @@ const readUser = () => {
       setLogin(null);
     }
   
-    return [user, setLogin];
+    return [decodedToken, setLogin, user?.token ];
   };
   
   export default useLogin;

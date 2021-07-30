@@ -1,0 +1,1 @@
+class BadModelAction(Exception): pass

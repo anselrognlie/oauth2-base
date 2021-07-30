@@ -16,11 +16,15 @@ const Auth = ({ onUserLoggedIn }) => {
     const state = query.get('state');
 
     const getUser = useCallback(async () => {
-        const response = await axios.get('/api/login/auth', {
-            params: { code, state }
-        })
+        try {
+            const response = await axios.get('/api/login/auth', {
+                params: { code, state }
+            })
 
-        onUserLoggedIn(response.data);
+            onUserLoggedIn(response.data);
+        } catch (error) {
+            console.log(error.response.data);
+        }
     }, [onUserLoggedIn, code, state]);
 
     useEffect(() => {

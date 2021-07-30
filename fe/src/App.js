@@ -1,4 +1,5 @@
 import {
+  BrowserRouter as Router,
   Switch,
   Route,
   Link,
@@ -14,9 +15,10 @@ import axios from 'axios';
 import {
   useHistory
 } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
-function App() {
-  const [user, setUser] = useLogin();
+function Main() {
+  const [user, setUser, token] = useLogin();
   const history = useHistory();
 
   const onUserLoggedIn = useCallback((user) => {
@@ -35,6 +37,12 @@ function App() {
   };
 
   const login = () => {
+    Cookies.remove('register');
+    loginRedirect();
+  };
+
+  const register = () => {
+    Cookies.set('register', JSON.stringify(true));
     loginRedirect();
   };
 
@@ -45,14 +53,19 @@ function App() {
         <li><Link to="/">Main</Link></li>
         <li><Link to="/page1">Page1</Link></li>
         <li><Link to="/page2">Page2</Link></li>
-        <li>{ !!user ? <button onClick={logout}>Logout</button> : <button onClick={login}>Login</button> }</li>
+        { !!user ? 
+          <li><button onClick={logout}>Logout</button></li> : 
+          <>
+            <li><button onClick={register}>Register</button></li>
+            <li><button onClick={login}>Login</button></li>
+          </>}
         </ul>
-        <div>{ !!user && <span>Logged in as {user.profile.full_name}</span> }</div>
+        <div>{ !!user && <span>Logged in as {user.name}</span> }</div>
       </nav>
     <div className="App">
       <Switch>
         <Route exact path="/"><img alt="react" src={Logo}></img></Route>
-        <Route exact path="/page1"><Number token={user?.token} /></Route>
+        <Route exact path="/page1"><Number token={token} /></Route>
         <Route exact path="/page2">Page2</Route>
         <Route exact path="/auth/google"><Auth {...{onUserLoggedIn, user}} /></Route>
         <Route exact path="/404">Not found</Route>
@@ -62,5 +75,9 @@ function App() {
     </>
   );
 }
+
+const App = () => {
+  return <Router><Main /></Router>
+};
 
 export default App;

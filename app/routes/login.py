@@ -5,6 +5,11 @@ import requests
 from ..auth.google import oauth
 import jwt
 from datetime import datetime, timedelta
+from ..models.user import User
+
+def register_on_login():
+    register_cookie = request.cookies.get("register")
+    return json.loads(register_cookie) if register_cookie else False
 
 # the user data returned from google includes the following data:
 # {
@@ -49,14 +54,24 @@ def get_auth():
             email=None
         )), 400
 
+    user_model = get_or_make_user(user, register_on_login())
+
     result_user = dict(
-        email=user["email"],
-        full_name=user["name"],
-        given_name=user["given_name"],
+        email=user_model.email,
+        name=user_model.name,
         exp=datetime.utcnow() + timedelta(days=7)
     )
 
     secret = current_app.secret_key
     token = jwt.encode(result_user, secret, algorithm="HS256")
 
-    return jsonify(dict(profile=result_user, token=token.decode("utf-8"))), 200
+    return jsonify(dict(token=token.decode("utf-8"))), 200
+
+def get_or_make_user(data, make=False):
+    if not make:
+        user = User.find_by_email(data["email"])
+    else:
+        user = User.from_token(data)
+        user.save()
+
+    return user

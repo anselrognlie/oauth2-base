@@ -5,12 +5,17 @@ const Number = ({ token }) => {
     const [number, setNumber] = useState(null);
 
     const getNumber = useCallback(async () => {
-        const response = await axios.get('/api/number', {
-            headers: {
-                Authorization: `JWT ${token}`
-            }
-        })
-        setNumber(response.data.number);
+        try {
+            const response = await axios.get('/api/number', {
+                headers: {
+                    Authorization: `JWT ${token}`
+                }
+            })
+            setNumber(response.data.number);
+        } catch (error) {
+            console.log(error.response.data);
+            setNumber(null);
+        }
     }, [token]);
 
     useEffect(() => {
