@@ -1,0 +1,18 @@
+.Lobby {
+    height: 100px;
+    overflow: hidden;
+}
+
+.Lobby .chat {
+    display: grid;
+    grid-template-rows: 1fr 20px;
+    height: 100%;
+}
+
+.Lobby .chat-log {
+    overflow-y: auto;
+}
+
+.Lobby .chat-msg * {
+    display: inline;
+}

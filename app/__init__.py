@@ -8,9 +8,9 @@ from .auth import google
 from .util.string import utf8_string
 from .auth.jwt_endpoint import register_default_validator
 from .data.storage import db, migrate
-from .models.user import User
+from .models import *
 from .auth.user_validator import validate
-from .routes import number, root, login
+from .routes import number, root, login, message
 
 def create_app(test_config=None):
     load_dotenv()
@@ -46,6 +46,7 @@ def create_app(test_config=None):
 
     api.register_blueprint(number.bp)
     api.register_blueprint(login.bp)
+    api.register_blueprint(message.bp)
 
     app.register_blueprint(api)
     root.register(app)

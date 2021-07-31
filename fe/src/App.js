@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import Number from './pages/Number';
 import Auth from './pages/Auth';
+import Lobby from './pages/Lobby';
 import Logo from './logo.svg';
 import './App.css';
 import { useCallback } from 'react';
@@ -74,7 +75,7 @@ function Main() {
         <Route exact path="/"><img alt="react" src={Logo}></img></Route>
         <Route exact path="/page1"><Number token={token} /></Route>
         <Route exact path="/page2">Page2</Route>
-        { !!user && <Route exact path="/lobby">Lobby</Route> }
+        { !!user && <Route exact path="/lobby"><Lobby user={user} token={token} /></Route> }
         <Route exact path="/auth/google"><Auth {...{onUserLoggedIn, onLoginFailed, user}} /></Route>
         <Route exact path="/404">Not found</Route>
         <Route><Redirect to="/404" /></Route>

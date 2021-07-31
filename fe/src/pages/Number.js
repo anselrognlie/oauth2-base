@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { addToken } from "../util/tokenLib";
 import axios from 'axios';
 
 const Number = ({ token }) => {
@@ -6,11 +7,7 @@ const Number = ({ token }) => {
 
     const getNumber = useCallback(async () => {
         try {
-            const response = await axios.get('/api/number', {
-                headers: {
-                    Authorization: `JWT ${token}`
-                }
-            })
+            const response = await axios.get('/api/number', addToken(token))
             setNumber(response.data.number);
         } catch (error) {
             console.log(error.response.data);

@@ -24,7 +24,7 @@ def register_on_login():
 #     'name': 'full name',
 #     'picture': 'url to profile picture',
 #     'given_name': 'first name',
-#     'family_name': 'last naem',
+#     'family_name': 'last name',
 #     'locale': 'en',
 #     'iat': some-digits,
 #     'exp': some-digits
@@ -57,6 +57,7 @@ def get_auth():
     user_model = get_or_make_user(user, register_on_login())
 
     result_user = dict(
+        id=user_model.id,
         email=user_model.email,
         name=user_model.name,
         exp=datetime.utcnow() + timedelta(days=7)
