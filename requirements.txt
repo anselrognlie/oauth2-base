@@ -1,6 +1,7 @@
 alembic==1.6.5
 Authlib==0.15.4
 autopep8==1.5.7
+bidict==0.21.2
 cachetools==4.2.2
 certifi==2021.5.30
 cffi==1.14.6
@@ -10,7 +11,10 @@ cryptography==3.4.7
 Flask==2.0.1
 Flask-Cors==3.0.10
 Flask-Migrate==3.0.1
+Flask-SocketIO==5.1.0
 Flask-SQLAlchemy==2.5.1
+gevent==21.1.2
+gevent-websocket==0.10.1
 greenlet==1.1.0
 gunicorn==20.1.0
 idna==3.2
@@ -29,6 +33,8 @@ pyOpenSSL==20.0.1
 python-dateutil==2.8.2
 python-dotenv==0.19.0
 python-editor==1.0.4
+python-engineio==4.2.0
+python-socketio==5.3.0
 requests==2.26.0
 rsa==4.7.2
 six==1.16.0
@@ -36,3 +42,5 @@ SQLAlchemy==1.4.22
 toml==0.10.2
 urllib3==1.26.6
 Werkzeug==2.0.1
+zope.event==4.5.0
+zope.interface==5.4.0
