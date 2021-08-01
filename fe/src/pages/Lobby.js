@@ -1,13 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useContext } from "react";
 import { addToken } from "../util/tokenLib";
 import MessageInput from "../components/MessageInput";
 import axios from 'axios';
 import './Lobby.css';
 import Message from "../data/message";
+import AuthContext from "../components/AuthContext";
 
-const Lobby = ({ user, token }) => {
+const Lobby = () => {
     const chat = useRef([]);
     const [mostRecent, setMostRecent] = useState(null);
+    const { user, token } = useContext(AuthContext);
 
     const getMessages = useCallback(async (latestId) => {
         try {

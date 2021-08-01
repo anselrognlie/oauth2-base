@@ -20,16 +20,21 @@ const readUser = () => {
   const useLogin = (account) => {
     const localUser = readUser();
     const [user, setUser] = useState(localUser);
-    const { decodedToken, isExpired } = decodeJwt(user?.token);
+    const [decodedToken, setDecodedToken] = useState(null);
+    const [isExpired, setIsExpired] = useState(false);
   
     const setLogin = useCallback((login) => {
+      setUser(login);
+
       if (login) {
         localStorage.setItem("user", JSON.stringify(login));
+        const { decodedToken, isExpired } = decodeJwt(login.token);
+        setDecodedToken(decodedToken);
+        setIsExpired(isExpired);
       } else {
         localStorage.removeItem("user");
+        setDecodedToken(null);
       }
-  
-      setUser(login);
     }, []);
   
     if (decodedToken && isExpired) {

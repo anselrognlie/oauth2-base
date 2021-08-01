@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { addToken } from "../util/tokenLib";
 import axios from 'axios';
+import AuthContext from "../components/AuthContext";
 
-const Number = ({ token }) => {
+const Number = () => {
     const [number, setNumber] = useState(null);
+    const { token } = useContext(AuthContext);
 
     const getNumber = useCallback(async () => {
         try {

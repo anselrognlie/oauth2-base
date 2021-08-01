@@ -6,21 +6,25 @@ import {
   Redirect
 } from 'react-router-dom';
 import Number from './pages/Number';
-import Auth from './pages/Auth';
+import AuthPage from './pages/Auth';
 import Lobby from './pages/Lobby';
 import Logo from './logo.svg';
 import './App.css';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useLogin from './hooks/login';
 import axios from 'axios';
 import {
   useHistory
 } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Auth } from './components/AuthContext';
 
 function Main() {
   const [user, setUser, token] = useLogin();
+  const [auth, setAuth] = useState({});
   const history = useHistory();
+
+  useEffect(() => setAuth({user, token}), [user, token]);
 
   const onUserLoggedIn = useCallback((user) => {
     setUser(user);
@@ -52,7 +56,7 @@ function Main() {
   };
 
   return (
-    <>
+    <Auth value={auth}>
       <nav>
         <ul>
         <li><Link to="/">Main</Link></li>
@@ -70,18 +74,18 @@ function Main() {
         </ul>
         <div>{ !!user && <span>Logged in as {user.name}</span> }</div>
       </nav>
-    <div className="App">
-      <Switch>
-        <Route exact path="/"><img alt="react" src={Logo}></img></Route>
-        <Route exact path="/page1"><Number token={token} /></Route>
-        <Route exact path="/page2">Page2</Route>
-        { !!user && <Route exact path="/lobby"><Lobby user={user} token={token} /></Route> }
-        <Route exact path="/auth/google"><Auth {...{onUserLoggedIn, onLoginFailed, user}} /></Route>
-        <Route exact path="/404">Not found</Route>
-        <Route><Redirect to="/404" /></Route>
-      </Switch>
-    </div>
-    </>
+      <div className="App">
+        <Switch>
+          <Route exact path="/"><img alt="react" src={Logo}></img></Route>
+          <Route exact path="/page1"><Number /></Route>
+          <Route exact path="/page2">Page2</Route>
+          { !!user && <Route exact path="/lobby"><Lobby /></Route> }
+          <Route exact path="/auth/google"><AuthPage {...{onUserLoggedIn, onLoginFailed}} /></Route>
+          <Route exact path="/404">Not found</Route>
+          <Route><Redirect to="/404" /></Route>
+        </Switch>
+      </div>
+    </Auth>
   );
 }
 
