@@ -18,6 +18,8 @@ import {
 } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Auth } from './components/AuthContext';
+import NavBar from './components/NavBar';
+import PrivateRoute from './components/PrivateRoute';
 
 function Main() {
   const [user, setUser, token] = useLogin();
@@ -57,29 +59,13 @@ function Main() {
 
   return (
     <Auth value={auth}>
-      <nav>
-        <ul>
-        <li><Link to="/">Main</Link></li>
-        <li><Link to="/page1">Page1</Link></li>
-        <li><Link to="/page2">Page2</Link></li>
-        { !!user ? (
-          <>
-            <li><Link to="/lobby">Lobby</Link></li>
-            <li><button onClick={logout}>Logout</button></li>
-          </>) : (
-          <>
-            <li><button onClick={register}>Register</button></li>
-            <li><button onClick={login}>Login</button></li>
-          </>)}
-        </ul>
-        <div>{ !!user && <span>Logged in as {user.name}</span> }</div>
-      </nav>
+      <NavBar {...{ login, logout, register }}></NavBar>
       <div className="App">
         <Switch>
           <Route exact path="/"><img alt="react" src={Logo}></img></Route>
-          <Route exact path="/page1"><Number /></Route>
+          <PrivateRoute isLoggedIn={!!user} exact path="/page1"><Number /></PrivateRoute>
           <Route exact path="/page2">Page2</Route>
-          { !!user && <Route exact path="/lobby"><Lobby /></Route> }
+          <PrivateRoute isLoggedIn={!!user} redirectTo="/" exact path="/lobby"><Lobby /></PrivateRoute>
           <Route exact path="/auth/google"><AuthPage {...{onUserLoggedIn, onLoginFailed}} /></Route>
           <Route exact path="/404">Not found</Route>
           <Route><Redirect to="/404" /></Route>
