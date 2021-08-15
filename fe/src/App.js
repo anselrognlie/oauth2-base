@@ -21,7 +21,7 @@ import NavBar from './components/NavBar';
 import PrivateRoute from './components/PrivateRoute';
 
 function Main() {
-  const [user, , setToken] = useLogin();
+  const [user, token, setToken] = useLogin();
   const history = useHistory();
 
   const onUserLoggedIn = useCallback((token) => {
@@ -54,7 +54,7 @@ function Main() {
   };
 
   return (
-    <Auth value={user}>
+    <Auth value={{user, token}}>
       <NavBar {...{ login, logout, register }}></NavBar>
       <div className="App">
         <Switch>
