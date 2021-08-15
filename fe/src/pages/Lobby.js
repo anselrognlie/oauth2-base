@@ -7,41 +7,45 @@ import Message from "../data/message";
 import AuthContext from "../components/AuthContext";
 import { DateTime } from 'luxon';
 
+const getSince = () => {
+        const now = DateTime.now();
+        return now.minus({minutes: 10});
+};
+
+const makeOpts = (since, latestId) => {
+    const opts = { params: { since: since.toISO() } };
+
+    if (latestId) {
+        opts.params.latestId = latestId;
+    }
+
+    return opts;
+};
+
 const Lobby = () => {
     const chat = useRef([]);
-    const [mostRecent, setMostRecent] = useState(null);
+    const [latestId, setLatestId] = useState(null);
+    const [since] = useState(getSince());
     const { user, token } = useContext(AuthContext);
 
-    const getMessages = useCallback(async (params) => {
+    const getMessages = useCallback(async () => {
         try {
-            const opts = { params: {} };
-            const FIELDS = ['since', 'latestId'];
-
-            if (params) {
-                for (const field of FIELDS) {
-                    if (params.hasOwnProperty(field)) {
-                        opts.params[field] = params[field];
-                    }
-                }
-            }
-
+            const opts = makeOpts(since, latestId);
             const response = await axios.get('/api/messages', addToken(token, opts))
             chat.current.push(...response.data.map(Message.from_json_dict));
             if (chat.current.length) {
                 const newMostRecent = chat.current.slice(-1)[0].id;
-                setMostRecent(newMostRecent);
+                setLatestId(newMostRecent);
             }
         } catch (error) {
             console.log(error.response.data);
             chat.current = []
-            setMostRecent(null);
+            setLatestId(null);
         }
-    }, [token]);
+    }, [token, since, latestId]);
 
     useEffect(() => {
-        const now = DateTime.now();
-        const since = now.minus({minutes: 10});
-        getMessages({since: since.toISO()});
+        getMessages();
     }, [getMessages]);
 
     const sendMessage = async (text) => {
@@ -59,7 +63,7 @@ const Lobby = () => {
 
     const sendHandler = async (inputs) => {
         await sendMessage(inputs.text);
-        await getMessages({ latestId: mostRecent});
+        await getMessages();
     };
 
     return (
