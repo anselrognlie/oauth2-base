@@ -9,7 +9,7 @@ import AuthPage from './pages/Auth';
 import Lobby from './pages/Lobby';
 import Logo from './logo.svg';
 import './App.css';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import useLogin from './hooks/login';
 import axios from 'axios';
 import {
@@ -21,23 +21,20 @@ import NavBar from './components/NavBar';
 import PrivateRoute from './components/PrivateRoute';
 
 function Main() {
-  const [user, setUser, token] = useLogin();
-  const [auth, setAuth] = useState({});
+  const [user, , setToken] = useLogin();
   const history = useHistory();
 
-  useEffect(() => setAuth({user, token}), [user, token]);
-
-  const onUserLoggedIn = useCallback((user) => {
-    setUser(user);
+  const onUserLoggedIn = useCallback((token) => {
+    setToken(token);
     history.push("/");
-  }, [setUser, history]);
+  }, [setToken, history]);
 
   const onLoginFailed = useCallback(() => {
     history.push("/");
   }, [history]);
 
   const logout = () => {
-    setUser(null);
+    setToken(null);
   };
 
   const loginRedirect = async () => {
@@ -57,7 +54,7 @@ function Main() {
   };
 
   return (
-    <Auth value={auth}>
+    <Auth value={user}>
       <NavBar {...{ login, logout, register }}></NavBar>
       <div className="App">
         <Switch>

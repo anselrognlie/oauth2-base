@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import AuthContext from "./AuthContext";
 
 const NavBar = ({ login, logout, register }) => {
-    const { user } = useContext(AuthContext);
+    const user = useContext(AuthContext);
     return (
         <nav>
             <ul>

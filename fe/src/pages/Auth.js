@@ -15,13 +15,13 @@ const Auth = ({ onUserLoggedIn, onLoginFailed }) => {
     const code = query.get('code');
     const state = query.get('state');
 
-    const getUser = useCallback(async () => {
+    const getToken = useCallback(async () => {
         try {
             const response = await axios.get('/api/login/auth', {
                 params: { code, state }
             })
 
-            onUserLoggedIn(response.data);
+            onUserLoggedIn(response.data.token);
         } catch (error) {
             console.log(error.response.data);
 
@@ -30,8 +30,8 @@ const Auth = ({ onUserLoggedIn, onLoginFailed }) => {
     }, [onUserLoggedIn, onLoginFailed, code, state]);
 
     useEffect(() => {
-        getUser();
-    }, [getUser]);
+        getToken();
+    }, [getToken]);
 
     return null;
 };

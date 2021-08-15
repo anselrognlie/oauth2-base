@@ -1,49 +1,38 @@
 import { useCallback, useState } from 'react';
 import { decodeToken, isExpired } from "react-jwt";
 
-const readUser = () => {
-    try {
-      return JSON.parse(localStorage.getItem("user"));
-    }
-    catch {
-      return null;
-    }
-  };
-  
-  const decodeJwt = (token) => {
-    const decodedToken = decodeToken(token);
-    const isTokenExpired = isExpired(token);
-  
-    return { decodedToken, isExpired: isTokenExpired }
-  };
-  
-  const useLogin = (account) => {
-    const localUser = readUser();
-    const [user, setUser] = useState(localUser);
-    const [decodedToken, setDecodedToken] = useState(null);
-    const [isExpired, setIsExpired] = useState(false);
-  
-    const setLogin = useCallback((login) => {
-      setUser(login);
+const readToken = () => {
+  return localStorage.getItem("token");
+};
 
-      if (login) {
-        localStorage.setItem("user", JSON.stringify(login));
-        const { decodedToken, isExpired } = decodeJwt(login.token);
-        setDecodedToken(decodedToken);
-        setIsExpired(isExpired);
-      } else {
-        localStorage.removeItem("user");
-        setDecodedToken(null);
-      }
-    }, []);
+const decodeJwt = (token) => {
+  const decodedToken = decodeToken(token);
+  const isTokenExpired = isExpired(token);
   
-    if (decodedToken && isExpired) {
-      console.log("Authorization expired.");
-      setLogin(null);
+  return { user: decodedToken, isExpired: isTokenExpired }
+};
+
+const useLogin = () => {
+  const [token, setTokenInternal] = useState(readToken);
+
+  const setToken = useCallback((token) => {
+    setTokenInternal(token);
+
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
     }
-  
-    return [decodedToken, setLogin, user?.token ];
-  };
-  
-  export default useLogin;
-  
+  }, []);
+
+  const { user, isExpired } = decodeJwt(token);
+
+  if (user && isExpired) {
+    console.log("Authorization expired.");
+    setToken(null);
+  }
+
+  return [ user, token, setToken ];
+};
+
+export default useLogin;
