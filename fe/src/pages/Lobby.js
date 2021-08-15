@@ -28,7 +28,7 @@ const Lobby = () => {
     const [since] = useState(getSince());
     const { user, token } = useContext(AuthContext);
 
-    const getMessages = useCallback(async () => {
+    const getMessages = useCallback(async (since, latestId) => {
         try {
             const opts = makeOpts(since, latestId);
             const response = await axios.get('/api/messages', addToken(token, opts))
@@ -42,11 +42,11 @@ const Lobby = () => {
             chat.current = []
             setLatestId(null);
         }
-    }, [token, since, latestId]);
+    }, [token]);
 
     useEffect(() => {
-        getMessages();
-    }, [getMessages]);
+        getMessages(since, latestId);
+    }, [getMessages, since, latestId]);
 
     const sendMessage = async (text) => {
         try {
@@ -63,7 +63,7 @@ const Lobby = () => {
 
     const sendHandler = async (inputs) => {
         await sendMessage(inputs.text);
-        await getMessages();
+        await getMessages(since, latestId);
     };
 
     return (
