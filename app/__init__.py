@@ -8,6 +8,7 @@ from .auth import google
 from .util.string import utf8_string
 from .auth.jwt_endpoint import register_default_validator
 from .data.storage import db, migrate
+from .net.channel import socketio
 from .models import *
 from .auth.user_validator import validate
 from .routes import number, root, login, message
@@ -39,6 +40,7 @@ def create_app(test_config=None):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    socketio.init_app(app)
 
     # Register Blueprints here
 

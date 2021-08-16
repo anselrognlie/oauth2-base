@@ -14,7 +14,7 @@ def sockets_io():
     from app.net.channel import socketio
 
     app = create_app()
-    socketio.run(app, async_mode='gevent', keyfile='key.pem', certfile='cert.pem')
+    socketio.run(app, keyfile='key.pem', certfile='cert.pem')
 
 if __name__ == "__main__":
-    raw_web_sockets()
+    sockets_io()
