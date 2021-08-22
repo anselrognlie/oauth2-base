@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
 import AuthContext from "./AuthContext";
+import { Link } from "react-router-dom";
 
 const NavBar = ({ login, logout, register }) => {
     const { user } = useContext(AuthContext);
@@ -10,6 +10,7 @@ const NavBar = ({ login, logout, register }) => {
                 <li><Link to="/">Main</Link></li>
                 {!!user && <li><Link to="/page1">Page1</Link></li>}
                 <li><Link to="/page2">Page2</Link></li>
+                <li><Link to="/page3">SocketIo</Link></li>
                 {user ? (
                     <>
                         <li><Link to="/lobby">Lobby</Link></li>

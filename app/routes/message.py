@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
-from ..auth.jwt_endpoint import jwt_required, current_identity
+from ..auth.jwt_endpoint import jwt_required, jwt_ws, current_identity
 from ..models.message import Message
+from ..net.channel import socketio
 
 bp = Blueprint("messages", __name__, url_prefix="/messages")
 
@@ -19,3 +20,9 @@ def send_message():
     message = Message.from_dict(request_body)
     message.save()
     return jsonify(message.to_json_dict()), 201
+
+@socketio.event
+@jwt_ws
+def send_message(data):
+    print(current_identity)
+    print(data)
